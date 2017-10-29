@@ -267,7 +267,7 @@ int main(int argc, char *argv[]) {
     system("./set_gpio\n");
     printf("Done setup gpio`s\n");
 
-    printf("Ready to run!!\n")
+    printf("Ready to run!!\n");
 
     printf("Current pattern is %c \n", currentPattern);
 
