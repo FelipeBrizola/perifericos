@@ -14,3 +14,5 @@ echo "out" > /sys/class/gpio/gpio25/direction
 echo "in" > /sys/class/gpio/gpio23/direction
 echo "in" > /sys/class/gpio/gpio24/direction
 echo "in" > /sys/class/gpio/gpio25/direction
+
+avrdude -v -p atmega328p -c gpio -U Blink.cpp.hex

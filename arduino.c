@@ -35,10 +35,28 @@ void upAllLeds() {
     digitalWrite(led4, HIGH);
 }
 
+// acende um por um da esquerda para direita 1 vez
 void patternA() {
     downAllLeds();
-    delay(1000);
-    upAllLeds();
+    digitalWrite(led4, HIGH);
+    delay(200);
+    digitalWrite(led4, LOW);
+    delay(200);
+    digitalWrite(led3, HIGH);
+    delay(200);
+    digitalWrite(led3, LOW);
+    delay(200);
+    digitalWrite(led2, HIGH);
+    delay(200);
+    digitalWrite(led2, LOW);
+    delay(200);
+    digitalWrite(led1, HIGH);
+    delay(200);
+    digitalWrite(led1, LOW);
+    delay(200);
+    digitalWrite(led0, HIGH);
+    delay(200);
+    digitalWrite(led0, LOW);
    
 }
 // pisca ledes 2 vezes
@@ -52,7 +70,8 @@ void patternB() {
     delay(1000);
     upAllLeds();
 }
-// acendo um por um
+
+// acende um por um da direita para esquerda 1 vez
 void patternC() {
     downAllLeds();
     digitalWrite(led0, HIGH);

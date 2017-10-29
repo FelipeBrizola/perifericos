@@ -263,13 +263,14 @@ int main(int argc, char *argv[]) {
     int pushbutton24 = 24; // b2 meio
     int pushbutton23 = 23; // b3 direita
 
-    printf("Initialize setup gpio`s\n");    
-    system("./set_gpio\n");
-    printf("Done setup gpio`s\n");
+    printf("----- Initialize setup gpio`s and run avrdude -v -p atmega328p -c gpio -U Blink.cpp.hex ----\n");    
+    system("./setup.sh");
+    printf("----- Done -----\n");
+
+
+
 
     printf("Ready to run!!\n");
-
-    printf("Current pattern is %c \n", currentPattern);
 
     do {
         if (readButton(pushbutton25) == 0) {
