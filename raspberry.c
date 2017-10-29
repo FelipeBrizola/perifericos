@@ -209,13 +209,12 @@ int writeOnSerial(char value)
     if (fd < 0)
         return 0;
 
-    printf("ENVIANDO VALOR %c\n", value);
     write(fd, &value, 1);
 
     return 0;
 }
 
-int readFromSerial(char value) {
+char readFromSerial(char value) {
     int fd;
 
     fd = config_serial("/dev/ttyAMA0", B9600);
@@ -224,9 +223,7 @@ int readFromSerial(char value) {
 
     read(fd, &value, 1);
 
-    printf("Value read from serial: %c\n", value);
-
-    return 0;
+    return value;
 }
 
 int readButton(int button) {
@@ -239,76 +236,91 @@ int readButton(int button) {
 
 int previousPattern() {
     
-        if (currentPattern == 'A')
-            currentPattern = 'C';
-        else if (currentPattern == 'B')
-            currentPattern = 'A';
-        else if (currentPattern == 'C')
-            currentPattern = 'B';
-    
-        return 0;
-    }
-    
-    int nextPattern() {
-    
-        if (currentPattern == 'A')
-            currentPattern = 'B';
-        else if (currentPattern == 'B')
-            currentPattern = 'C';
-        else if (currentPattern == 'C')
-            currentPattern = 'A';
-    
-        return 0;
-    }
+    if (currentPattern == 'A')
+        currentPattern = 'C';
+    else if (currentPattern == 'B')
+        currentPattern = 'A';
+    else if (currentPattern == 'C')
+        currentPattern = 'B';
 
-int main(int argc, char *argv[])
-{
+    return 0;
+}
+    
+int nextPattern() {
+    
+    if (currentPattern == 'A')
+        currentPattern = 'B';
+    else if (currentPattern == 'B')
+        currentPattern = 'C';
+    else if (currentPattern == 'C')
+        currentPattern = 'A';
+
+    return 0;
+}
+
+int main(int argc, char *argv[]) {
     int pushbutton25 = 25; // b1 esquedo
     int pushbutton24 = 24; // b2 meio
     int pushbutton23 = 23; // b3 direita
 
+    printf("Initialize setup gpio`s\n");    
+    system("./set_gpio\n");
+    printf("Done setup gpio`s\n");
+
+    printf("Ready to run!!\n")
+
+    printf("Current pattern is %c \n", currentPattern);
+
     do {
         if (readButton(pushbutton25) == 0) {
-            printf("Previous sequence \n");
             previousPattern();
+            printf("Previous sequence. The current pattern is %c \n", currentPattern);
             writeOnSerial(currentPattern);
             while(readButton(pushbutton25) == 0);
         }
 
         if (readButton(pushbutton23) == 0) {
-            printf("Next sequence \n");
             nextPattern();
+            printf("Next sequence. The current pattern is %c \n", currentPattern);
             writeOnSerial(currentPattern);
             while(readButton(pushbutton23) == 0);
         }
 
         if (readButton(pushbutton24) == 0) {
-            printf("Counter \n");
+            printf("----- Counter report ----- \n");
             char d = 'D';
             writeOnSerial(d);
 
-            readFromSerial(d);
-            printf("First sequence : %c\n", d);
-            readFromSerial(d);
-            printf("Second sequence : %c\n", d);
-            readFromSerial(d);
-            printf("Third sequence : %c\n", d);
+            char counterPatternA = readFromSerial(d);
+            printf("    Pattern A : %d\n", counterPatternA);
+
+            usleep(100);
+
+            char counterPatternB = readFromSerial(d);
+            printf("    Pattern B : %d\n", counterPatternB);
+
+            usleep(100);
+
+            char counterPatternC = readFromSerial(d);
+            printf("    Pattern C : %d\n", counterPatternC);
+
+            printf("-----                ----- \n");
 
             while(readButton(pushbutton24) == 0);
         }
 
-        sleep(0.5);
+        usleep(5);
 
     } while (1);
 
     /*
-   * Disable GPIO pins
-   */
+    * Disable GPIO pins
+    */
     if (-1 == GPIOUnexport(pushbutton25))
         return (4);
 
-    // if (-1 == GPIOUnexport(pushbutton24))
-    //     return (4);
+    if (-1 == GPIOUnexport(pushbutton24))
+        return (4);
 
     if (-1 == GPIOUnexport(pushbutton23))
         return (4);
